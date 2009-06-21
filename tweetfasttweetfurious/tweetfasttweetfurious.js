@@ -46,10 +46,12 @@ function run() {
   }
 }
 
+// Gets the list of candidate statuses.
 function findTargets() {
   return $(".status .meta");
 }
 
+// Adds the ToF challenge-this-user link to status messages.
 function decorateStatusMessage(e) {
   var victim = getVictimName(e);
 
@@ -97,6 +99,7 @@ function getVictimName(e) {
   }
 }
 
+// Determine whether the current location is Twitter or TweetsOfFury.
 function currentLocation() {
   var l = window.location.host;
   if (l.search(locationToF) >= 0) { return locationToF; }
@@ -104,14 +107,17 @@ function currentLocation() {
   return "unknown";
 }
 
+// Returns true if we're at TweetsOfFury.
 function visitingTweetsOfFury() {
   return currentLocation() == locationToF;
 }
 
+// Returns true if we're at Twitter.
 function visitingTwitter() {
   return currentLocation() == locationTw;
 }
 
+// Exposes Greasemonkey API to a specific function.
 function safeWrap(f) {
   return function() {
     setTimeout.apply(window, [f, 0].concat([].slice.call(arguments)));
