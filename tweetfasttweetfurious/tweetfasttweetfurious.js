@@ -2,7 +2,7 @@
 // @name           TweetFastTweetFurious
 // @namespace      http://distilledb.com
 // @description    Has your honor been scandalously impugned by an insolent whelp? Show that monstrous cad how you feel by challenging them to a TweetsOfFury battle, post-haste. Throw down the e-gauntlet and give those foppish dandies a deserving taste of their own bitter medicine!
-// @version        0.1
+// @version        0.2
 // @include        http://twitter.com/
 // @include        http://twitter.com/home
 // @include        http://tweetsoffury.com/battles/new*
@@ -14,6 +14,7 @@ const tofBattleUri = "http://tweetsoffury.com/battles/new";
 const tofVictimKey = "tofVictim";
 const locationToF  = "tweetsoffury.com";
 const locationTw   = "twitter.com";
+const cssClass     = "greasemonkey-tweetfasttweetfurious";
 
 initialize();
 run();
@@ -55,12 +56,16 @@ function findTargets() {
 function decorateStatusMessage(e) {
   var victim = getVictimName(e);
 
+  var container = $("<span>");
+  container.attr('class', cssClass);
+  container.attr('style', 'display: none;');
+
   // Separate the element from the rest of the status message.
   var separator = $("<span> &mdash; </span>");
 
   // Link to the ToF battle page. Use unsafeWindow so that we can set the clicked user
   // with Greasemonkey's property store.
-  var challengeLink = unsafeWindow.jQuery("<a>");
+  var challengeLink = $("<a>");
   challengeLink.attr('href', 'http://tweetsoffury.com/battles/new');
   challengeLink.attr('title', 'challenge that scurvy cur, ' + victim + '!');
 
@@ -83,7 +88,12 @@ function decorateStatusMessage(e) {
 
   // Put it all together.
   challengeLink.append(challengeMessage);
-  $(e).append(separator).append(challengeLink).append(challengeMessageImage);
+  container.append(separator).append(challengeLink).append(challengeMessageImage);
+  $(e).append(container);
+
+  // [Show/hide] the challenge link on mouse[over/out].
+  $(".status").hover(function() { $(this).find("." + cssClass).show(); },
+    function() { $(this).find("." + cssClass).hide(); });
 }
 
 // Get a Twitter username given their status element.
